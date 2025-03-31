@@ -13,7 +13,7 @@ export default async function handlePay(order, user) {
   );
   console.log(price);
   const options = {
-    key: "rzp_test_soz2eu4ImIgju2",
+    key: "",
     amount: price * order.quantity * 100,
     currency: "INR",
     name: "Pharmly",
