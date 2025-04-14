@@ -6,7 +6,7 @@ import getConsumerOrders from "../functions/lambda/GetConsumerOrders";
 import getConsumerBills from "../functions/lambda/GetConsumerBills";
 import getRetailerOrders from "../functions/lambda/GetRetailerOrders";
 import changeOrderState from "../functions/lambda/ChangeOrderState";
-import handlePay from "../functions/Payment";
+import handlePay from "../functions/utility/Payment";
 import { FaClipboardList } from "react-icons/fa";
 import { ChartNoAxesCombinedIcon } from "lucide-react";
 import getRetailerTransactions from "../functions/lambda/GetRetailerTransactions";

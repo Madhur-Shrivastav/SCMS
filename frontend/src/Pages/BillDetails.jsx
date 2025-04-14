@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import getBillDetails from "../functions/lambda/GetBillDetails";
+import formatDate from "../functions/utility/FormatDate";
 
 const BillDetails = () => {
   const { userId, billId, orderId } = useParams();
@@ -45,6 +46,7 @@ const BillDetails = () => {
             </p>
             <p className="text-base sm:text-lg">Price: ₹{bill.product_price}</p>
             <p className="text-base sm:text-lg">Quantity: {bill.quantity}</p>
+            <p className="text-base sm:text-lg">Date/Time: {bill.time_date}</p>
           </div>
           {userId === bill.consumer_id ? (
             <div className="space-y-2">

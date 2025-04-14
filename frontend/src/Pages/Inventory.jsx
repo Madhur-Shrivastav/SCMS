@@ -4,6 +4,7 @@ import getMedicineByQuery from "../functions/lambda/GetMedicineByQuery";
 import getRetailerInventory from "../functions/lambda/GetRetailerInventory";
 import getMedicineDetails from "../functions/lambda/GetMedicineDetails";
 import SearchBar from "../components/SearchBar";
+import formatDate from "../functions/utility/FormatDate";
 
 const Inventory = () => {
   const navigate = useNavigate();
@@ -40,18 +41,6 @@ const Inventory = () => {
   useEffect(() => {
     fetchMedicines();
   }, [userId]);
-
-  const formatDate = (isoString) => {
-    const date = new Date(isoString);
-    return date.toLocaleString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
 
   return (
     <section className="flex flex-col items-center p-4">
@@ -106,7 +95,7 @@ const Inventory = () => {
                     </td>
 
                     <td className="p-7 overflow-hidden whitespace-nowrap text-ellipsis">
-                      {formatDate(medicine.batch_added_at)}
+                      {medicine.batch_added_at}
                     </td>
                   </tr>
                 ))}

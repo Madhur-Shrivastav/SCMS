@@ -1,52 +1,37 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import getConsumerOrders from "../functions/lambda/GetConsumerOrders";
-import getRetailerOrders from "../functions/lambda/GetRetailerOrders";
+import getOrderDetails from "../functions/lambda/GetOrderDetails";
 import { UserContext } from "../contexts/UserContext";
 
 const OrderDetails = () => {
-  const { user } = new useContext(UserContext);
+  const { user } = useContext(UserContext);
   const { userId, orderId } = useParams();
+  console.log(useParams());
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [orders, setOrders] = useState([]);
+
   useEffect(() => {
-    if (userId) {
-      if (user?.role === "Consumer") {
-        getConsumerOrders(userId).then((data) => {
-          if (!data.error) {
-            setOrders(data.orders || []);
-            const foundOrder = data.orders.find(
-              (order) => order.order_id === orderId
-            );
-            setOrder(foundOrder || null);
-            setLoading(false);
-          }
-        });
-      } else {
-        getRetailerOrders(userId).then((data) => {
-          if (!data.error) {
-            setOrders(data.orders || []);
-            const foundOrder = data.orders.find(
-              (order) => order.order_id === orderId
-            );
-            setOrder(foundOrder || null);
-            setLoading(false);
-          }
-        });
+    if (!orderId) return;
+
+    const getDetails = async () => {
+      try {
+        const orderInfo = await getOrderDetails(orderId);
+        console.log(orderInfo);
+        setOrder(orderInfo.order);
+      } catch (error) {
+        console.log("Error:", error);
+      } finally {
+        setLoading(false);
       }
-    }
-  }, [userId, orderId]);
+    };
 
-  if (loading) return <p>Loading order details...</p>;
-  if (!order) return <p>Order not found.</p>;
+    getDetails();
+  }, [orderId, userId]);
 
-  const isConsumer = order.consumer_id === user.id;
-  const isRetailer = order.retailer_id === user.id;
+  if (loading) return <p>Loading bill details...</p>;
+  if (!order) return <p>Bill not found.</p>;
 
-  if (!isConsumer && !isRetailer) {
-    return <p>You are not authorized to view this order.</p>;
-  }
+  console.log(order);
 
   return (
     <div className="p-6">
@@ -54,7 +39,7 @@ const OrderDetails = () => {
       <p>
         <strong>Order ID:</strong> {order.order_id}
       </p>
-      {isRetailer && (
+      {user?.role === "Retailer" && (
         <p>
           <strong>Batch ID:</strong> {order.batch_id}
         </p>

@@ -33,7 +33,7 @@ export default async function getConsumerBills(consumerId) {
       retailer_email: item.retailer_email.S,
       retailer_address: item.retailer_address.S,
     }));
-    console.log("Formatted Bills:", formattedBills);
+    //console.log("Formatted Bills:", formattedBills);
 
     return { bills: formattedBills };
   } catch (error) {

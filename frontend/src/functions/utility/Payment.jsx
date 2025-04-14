@@ -1,7 +1,7 @@
-import getMedicineDetails from "./lambda/GetMedicineDetails";
-import getRetailerDetails from "./lambda/GetRetailerDetails";
-import makeBill from "./lambda/MakeBill";
-import makePayment from "./lambda/MakePayment";
+import getMedicineDetails from "../lambda/GetMedicineDetails";
+import getRetailerDetails from "../lambda/GetRetailerDetails";
+import makeBill from "../lambda/MakeBill";
+import makePayment from "../lambda/MakePayment";
 
 export default async function handlePay(order, user, showAlert) {
   if (!window.Razorpay) {

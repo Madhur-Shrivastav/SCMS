@@ -103,7 +103,7 @@ const Retailer = () => {
                 className="flex flex-col justify-center items-center text-center p-6 sm:p-8"
               >
                 <img
-                  src={medicine.image_urls[0]}
+                  src={medicine.image_urls ? medicine.image_urls[0] : ""}
                   alt="listing cover"
                   className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover hover:scale-[1.05] transition-transform duration-300"
                 />
