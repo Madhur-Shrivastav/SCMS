@@ -58,7 +58,4 @@ export default async function handlePay(order, user, showAlert) {
   rzp.open();
 }
 //5267318187975449
-// const razorpay = new Razorpay({
-//   key_id: "rzp_test_soz2eu4ImIgju2",
-//   key_secret: "pstKjM5wfv3OvbgsWBo6F4Dk",
-// });
+
