@@ -189,58 +189,62 @@ const Chat = () => {
   };
 
   return (
-    <section>
-      <div className="app">
-        {
-          <div className="chat-container">
-            <h1 className="chat-title">Pharmly</h1>
+    <section className="min-h-screen flex items-center justify-center p-4 bg-gray-100">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-md flex flex-col h-[80vh] max-h-[600px] overflow-hidden">
+        <h1 className="text-2xl font-bold text-center text-gray-800 py-4">
+          Pharmly
+        </h1>
 
-            <div className="chat-box">
-              {chatHistory.map((message, index) => (
+        <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-2">
+          {chatHistory.map((message, index) => (
+            <div
+              key={index}
+              className={`p-3 rounded-2xl max-w-[80%] break-words ${
+                message.sender === "user"
+                  ? "ml-auto bg-lime-500 text-white"
+                  : "bg-indigo-50 text-gray-800"
+              }`}
+            >
+              <strong>{message.sender === "user" ? "You" : "Bot"}:</strong>{" "}
+              {message.sender === "bot" ? (
                 <div
-                  key={index}
-                  className={`message ${
-                    message.sender === "user" ? "user-message" : "bot-message"
-                  }`}
-                >
-                  <strong>{message.sender === "user" ? "You" : "Bot"}:</strong>{" "}
-                  {message.sender === "bot" ? (
-                    <div
-                      dangerouslySetInnerHTML={{ __html: marked(message.text) }}
-                    />
-                  ) : (
-                    message.text
-                  )}
-                </div>
-              ))}
-
-              {isLoading && <div className="loading">typing...</div>}
+                  dangerouslySetInnerHTML={{ __html: marked(message.text) }}
+                />
+              ) : (
+                message.text
+              )}
             </div>
+          ))}
+          {isLoading && (
+            <div className="text-center text-gray-500 italic">typing...</div>
+          )}
+        </div>
 
-            <div className="input-container">
-              <input
-                type="text"
-                value={userInput}
-                onChange={handleInputChange}
-                placeholder="Type your message..."
-                className="input-field"
-                onKeyDown={handleKeyPress}
-              />
-              <button onClick={handleSend} className="send-button">
-                Send
-              </button>
-              <button
-                onClick={() => {
-                  setChatHistory([]);
-                  localStorage.removeItem("chatHistory");
-                }}
-                className="send-button"
-              >
-                Clear Chat
-              </button>
-            </div>
-          </div>
-        }
+        <div className="p-4 border-t flex flex-col items-center justify-center gap-2">
+          <input
+            type="text"
+            value={userInput}
+            onChange={handleInputChange}
+            placeholder="Type your message..."
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-lime-500 w-full"
+            onKeyDown={handleKeyPress}
+          />
+          <button
+            onClick={handleSend}
+            className="bg-lime-500 text-white px-4 py-2 rounded-full hover:bg-lime-400 transition w-full"
+          >
+            Send
+          </button>
+          <button
+            onClick={() => {
+              setChatHistory([]);
+              localStorage.removeItem("chatHistory");
+            }}
+            className="bg-lime-500 text-white px-4 py-2 rounded-full hover:bg-lime-400 transition w-full"
+          >
+            Clear
+          </button>
+        </div>
       </div>
     </section>
   );
