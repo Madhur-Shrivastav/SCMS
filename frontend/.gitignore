@@ -47,3 +47,4 @@ amplifytools.xcconfig
 getAWSLambda.jsx
 AWS_GetCognitoIdentityServiceProvider.jsx
 getAIModel.jsx
+secrets.mjs

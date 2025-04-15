@@ -2,13 +2,14 @@
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { getAnalytics } from "firebase/analytics";
+import { keys } from "../../secrets.mjs";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "",
+  apiKey: keys.firebase,
   authDomain: "libraryapplication-b5ac0.firebaseapp.com",
   projectId: "libraryapplication-b5ac0",
   storageBucket: "libraryapplication-b5ac0.appspot.com",

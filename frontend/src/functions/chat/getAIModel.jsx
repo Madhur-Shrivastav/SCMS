@@ -1,6 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
+import { keys } from "../../secrets.mjs";
 const ai = new GoogleGenAI({
-  apiKey: "AIzaSyCfVMxZNBqQsSdrspROnaXTLzXWd82z5r8",
+  apiKey: keys.gemini,
 });
 export default function getAIModel() {
   return ai;

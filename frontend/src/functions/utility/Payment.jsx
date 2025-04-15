@@ -1,3 +1,4 @@
+import { keys } from "../../secrets.mjs";
 import getMedicineDetails from "../lambda/GetMedicineDetails";
 import getRetailerDetails from "../lambda/GetRetailerDetails";
 import makeBill from "../lambda/MakeBill";
@@ -16,7 +17,7 @@ export default async function handlePay(order, user, showAlert) {
   const retailer = await getRetailerDetails(order.retailer_id);
 
   const options = {
-    key: "rzp_test_soz2eu4ImIgju2",
+    key: keys.razorpay,
     amount: price * order.quantity * 100,
     currency: "INR",
     name: "Pharmly",
@@ -58,4 +59,3 @@ export default async function handlePay(order, user, showAlert) {
   rzp.open();
 }
 //5267318187975449
-
