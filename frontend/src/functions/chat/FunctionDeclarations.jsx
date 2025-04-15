@@ -1,21 +1,14 @@
 import { Type } from "@google/genai";
-export const getConsumerBillsFunctionDeclaration = {
-  name: "get_consumer_bills",
-  description: "Fetches all bills for a specified consumer.",
+
+export const getUserOrdersFunctionDeclaration = {
+  name: "get_user_orders",
+  description: "Fetches all orders for a specified user.",
 };
-export const getConsumerOrdersFunctionDeclaration = {
-  name: "get_consumer_orders",
-  description: "Fetches all orders for a specified consumer.",
-  parameters: {
-    type: Type.OBJECT,
-    properties: {
-      consumer_id: {
-        type: Type.STRING,
-        description: "The ID of the consumer whose orders need to be fetched.",
-      },
-    },
-  },
+export const getUserTransactionsOrBillsFunctionDeclaration = {
+  name: "get_user_transactions_bills",
+  description: "Fetches all transactions or for a specified user.",
 };
+
 export const getAvailableRetailersFunctionDeclaration = {
   name: "get_available_retailers",
   description:
@@ -82,6 +75,25 @@ export const getBillDetailsFunctionDeclaration = {
         type: Type.STRING,
         description:
           "The unique identifier of the order to which the bill was generated after completion.",
+      },
+    },
+    required: ["billId", "orderId"],
+  },
+};
+export const getTransactionDetailsFunctionDeclaration = {
+  name: "get_transaction_details",
+  description: "Fetches the transaction details for a specific transaction.",
+  parameters: {
+    type: Type.OBJECT,
+    properties: {
+      billId: {
+        type: Type.STRING,
+        description: "The unique identifier of the transaction to be fetched.",
+      },
+      orderId: {
+        type: Type.STRING,
+        description:
+          "The unique identifier of the order to which the bill was generated after transaction.",
       },
     },
     required: ["billId", "orderId"],

@@ -1,12 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { marked } from "marked";
-import getConsumerBills from "../functions/lambda/GetConsumerBills";
-import getConsumerOrders from "../functions/lambda/GetConsumerOrders";
+import ReactMarkdown from "react-markdown";
 import callGemini from "../functions/chat/CallGemini";
-import getRetailersByQuery from "../functions/lambda/GetRetailersByQuery";
-import getBillDetails from "../functions/lambda/GetBillDetails";
-import getOrderDetails from "../functions/lambda/GetOrderDetails";
+import handleFunctionCall from "../functions/utility/HandleFunctionCall";
 
 const Chat = () => {
   const { user } = useContext(UserContext);
@@ -60,7 +57,7 @@ const Chat = () => {
     try {
       const prompt = `
   You are a chatbot assistant for a medicine supply chain system. 
-  You need to assist the ${user?.role}. 
+  You need to assist the ${user?.role}.
   Options for a consumer are: ${consumerOptions} 
   Options for a retailer are: ${retailerOptions}
   If the ${user?.role} asks anything outside of the provided options, provide relevant information.
@@ -71,92 +68,7 @@ const Chat = () => {
 
       if (response.functionCalls && response.functionCalls.length > 0) {
         const functionCall = response.functionCalls[0];
-
-        let messageText;
-
-        if (functionCall.name === "get_consumer_bills") {
-          const result = await getConsumerBills(user.id);
-          const billsSummary =
-            result?.bills?.length > 0
-              ? `You are a helpful assistant. Format the following list of medicine bills into a readable summary, use separators... Data: ${JSON.stringify(
-                  result.bills,
-                  null,
-                  2
-                )}`
-              : "";
-          const summaryResponse = await callGemini(billsSummary, []);
-          messageText =
-            summaryResponse.candidates?.[0]?.content?.parts?.[0]?.text ||
-            "Could not fetch bills.";
-        } else if (functionCall.name === "get_consumer_orders") {
-          const result = await getConsumerOrders(user.id);
-
-          const ordersSummary =
-            result?.orders?.length > 0
-              ? `You are a helpful assistant. Format the following list of medicine orders into a readable summary, use separators... Data: ${JSON.stringify(
-                  result.orders,
-                  null,
-                  2
-                )}`
-              : "";
-          const summaryResponse = await callGemini(ordersSummary, []);
-          messageText =
-            summaryResponse.candidates?.[0]?.content?.parts?.[0]?.text ||
-            "Could not fetch orders.";
-        } else if (functionCall.name === "get_available_retailers") {
-          const result = await getRetailersByQuery(user.city, user.state, "");
-          const retailersSummary =
-            result?.retailers?.length > 0
-              ? `You are a helpful assistant. Format the following list of retailers into a readable summary, use separators... Data: ${JSON.stringify(
-                  result.retailers,
-                  null,
-                  2
-                )}`
-              : "";
-          const summaryResponse = await callGemini(retailersSummary, []);
-          messageText =
-            summaryResponse.candidates?.[0]?.content?.parts?.[0]?.text ||
-            "Could not fetch retailers.";
-        } else if (functionCall.name === "view_my_details") {
-          const userSummary = user
-            ? `You are a helpful assistant. Format the following user into a readable summary, use separators... Data: ${JSON.stringify(
-                user,
-                null,
-                2
-              )}`
-            : "";
-          const summaryResponse = await callGemini(userSummary, []);
-          messageText =
-            summaryResponse.candidates?.[0]?.content?.parts?.[0]?.text ||
-            "Could not your details.";
-        } else if (functionCall.name === "get_bill_details") {
-          const result = await getBillDetails(
-            functionCall?.args?.billId,
-            functionCall?.args?.orderId
-          );
-          const billSummary = result?.bill
-            ? `You are a helpful assistant. Format the following bill into a readable summary, and the amount's currency is INR use separators... Data: ${JSON.stringify(
-                result.bill
-              )}`
-            : "";
-          const summaryResponse = await callGemini(billSummary, []);
-          messageText =
-            summaryResponse.candidates?.[0]?.content?.parts?.[0]?.text ||
-            "Could not fetch bill summary.";
-        } else if (functionCall.name === "get_order_details") {
-          const result = await getOrderDetails(functionCall?.args?.orderId);
-          const orderSummary = result?.order
-            ? `You are a helpful assistant. Format the following order into a readable summary, and the amount's currency is INR use separators... Data: ${JSON.stringify(
-                result.order
-              )}`
-            : "";
-          const summaryResponse = await callGemini(orderSummary, []);
-          messageText =
-            summaryResponse.candidates?.[0]?.content?.parts?.[0]?.text ||
-            "Could not fetch order summary.";
-        } else {
-          messageText = "No data available.";
-        }
+        const messageText = await handleFunctionCall(functionCall, user);
 
         const botMessage = { sender: "bot", text: messageText };
         setChatHistory((prev) => {
@@ -166,10 +78,10 @@ const Chat = () => {
         });
       } else {
         const reply = response.text || "Sorry, no response available.";
-        const botMessage = { role: "model", parts: [{ text: reply }] };
+        const botMessage = { sender: "bot", text: reply };
 
         setChatHistory((prev) => {
-          const updated = [...prev, { sender: "bot", text: reply }];
+          const updated = [...prev, botMessage];
           localStorage.setItem("chatHistory", JSON.stringify(updated));
           return updated;
         });
@@ -189,61 +101,98 @@ const Chat = () => {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center p-4 bg-gray-100">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-md flex flex-col h-[80vh] max-h-[600px] overflow-hidden">
-        <h1 className="text-2xl font-bold text-center text-gray-800 py-4">
-          Pharmly
-        </h1>
+    <section className="flex flex-col items-center justify-center w-full min-h-screen bg-gray-100 text-gray-800 px-4 sm:px-6 md:px-10 py-10">
+      <div className="flex flex-col w-full max-w-xl bg-white shadow-xl rounded-lg overflow-hidden">
+        <h1 className="text-center text-2xl font-bold pt-4">Pharmly</h1>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-2">
+        <div className="flex flex-col flex-grow h-[60vh] sm:h-[65vh] md:h-[70vh] p-4 overflow-y-auto">
           {chatHistory.map((message, index) => (
             <div
               key={index}
-              className={`p-3 rounded-2xl max-w-[80%] break-words ${
+              className={`flex w-full mt-2 space-x-3 ${
                 message.sender === "user"
-                  ? "ml-auto bg-lime-500 text-white"
-                  : "bg-indigo-50 text-gray-800"
+                  ? "max-w-[75%] ml-auto justify-end"
+                  : "max-w-[75%]"
               }`}
             >
-              <strong>{message.sender === "user" ? "You" : "Bot"}:</strong>{" "}
-              {message.sender === "bot" ? (
+              {message.sender === "bot" && (
+                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-[#9bd300] overflow-hidden">
+                  <img
+                    src="/assets/user.jpeg"
+                    alt="bot"
+                    className="object-cover h-full w-full"
+                  />
+                </div>
+              )}
+
+              <div>
                 <div
-                  dangerouslySetInnerHTML={{ __html: marked(message.text) }}
-                />
-              ) : (
-                message.text
+                  className={`p-3 text-sm break-words ${
+                    message.sender === "user"
+                      ? "bg-[#9bd300] text-white rounded-l-lg rounded-br-lg"
+                      : "bg-gray-100 text-black rounded-r-lg rounded-bl-lg"
+                  }`}
+                >
+                  <ReactMarkdown>{message.text}</ReactMarkdown>
+                </div>
+                <span className="text-xs text-gray-500 leading-none">
+                  Just now
+                </span>
+              </div>
+
+              {message.sender === "user" && (
+                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-[#9bd300] overflow-hidden">
+                  <img
+                    src={user.profileImage}
+                    alt="user"
+                    className="object-cover h-full w-full"
+                  />
+                </div>
               )}
             </div>
           ))}
+
           {isLoading && (
-            <div className="text-center text-gray-500 italic">typing...</div>
+            <div className="flex w-full mt-2 space-x-3 max-w-[75%]">
+              <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+              <div>
+                <div className="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg text-sm">
+                  <p>typing...</p>
+                </div>
+                <span className="text-xs text-gray-500 leading-none">Bot</span>
+              </div>
+            </div>
           )}
         </div>
 
-        <div className="p-4 border-t flex flex-col items-center justify-center gap-2">
-          <input
-            type="text"
-            value={userInput}
-            onChange={handleInputChange}
-            placeholder="Type your message..."
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-lime-500 w-full"
-            onKeyDown={handleKeyPress}
-          />
-          <button
-            onClick={handleSend}
-            className="bg-lime-500 text-white px-4 py-2 rounded-full hover:bg-lime-400 transition w-full"
-          >
-            Send
-          </button>
-          <button
-            onClick={() => {
-              setChatHistory([]);
-              localStorage.removeItem("chatHistory");
-            }}
-            className="bg-lime-500 text-white px-4 py-2 rounded-full hover:bg-lime-400 transition w-full"
-          >
-            Clear
-          </button>
+        <div className="bg-white p-4 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+            <input
+              className="rounded-full h-10 w-full px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#9bd300]"
+              type="text"
+              value={userInput}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyPress}
+              placeholder="Type your message…"
+            />
+            <div className="flex gap-2 w-full sm:w-auto">
+              <button
+                onClick={handleSend}
+                className="bg-[#9bd300] text-white px-4 py-2 rounded-full text-sm w-full sm:w-auto hover:bg-[#9bd300c4]"
+              >
+                Send
+              </button>
+              <button
+                onClick={() => {
+                  setChatHistory([]);
+                  localStorage.removeItem("chatHistory");
+                }}
+                className="bg-[#9bd300] text-white px-4 py-2 rounded-full text-sm w-full sm:w-auto hover:bg-[#9bd300c4]"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

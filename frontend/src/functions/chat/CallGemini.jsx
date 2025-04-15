@@ -1,9 +1,9 @@
 import {
   getAvailableRetailersFunctionDeclaration,
   getBillDetailsFunctionDeclaration,
-  getConsumerBillsFunctionDeclaration,
-  getConsumerOrdersFunctionDeclaration,
   getOrderDetailsFunctionDeclaration,
+  getUserOrdersFunctionDeclaration,
+  getUserTransactionsOrBillsFunctionDeclaration,
   viewMyDetailsFunctionDeclaration,
 } from "./FunctionDeclarations";
 import getAIModel from "./getAIModel";
@@ -28,12 +28,12 @@ export default async function callGemini(prompt, updatedHistory) {
       tools: [
         {
           functionDeclarations: [
-            getConsumerBillsFunctionDeclaration,
-            getConsumerOrdersFunctionDeclaration,
+            getUserOrdersFunctionDeclaration,
             getAvailableRetailersFunctionDeclaration,
             viewMyDetailsFunctionDeclaration,
             getBillDetailsFunctionDeclaration,
             getOrderDetailsFunctionDeclaration,
+            getUserTransactionsOrBillsFunctionDeclaration,
           ],
         },
       ],
