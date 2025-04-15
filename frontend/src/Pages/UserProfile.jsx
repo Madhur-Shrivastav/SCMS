@@ -151,7 +151,7 @@ const UserProfile = () => {
       <div className="flex flex-col gap-6 w-full lg:w-1/2">
         <div className="bg-white shadow-lg rounded-2xl p-4 sm:p-6">
           <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-lg font-semibold">Pending Orders</h2>
+            <h2 className="text-lg font-semibold">Orders</h2>
             <FaClipboardList />
           </div>
 
