@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import getMedicineByQuery from "../functions/lambda/GetMedicineByQuery";
 import getRetailerInventory from "../functions/lambda/GetRetailerInventory";
-import getMedicineDetails from "../functions/lambda/GetMedicineDetails";
 import SearchBar from "../components/SearchBar";
-import formatDate from "../functions/utility/FormatDate";
 
 const Inventory = () => {
   const navigate = useNavigate();
@@ -17,25 +15,7 @@ const Inventory = () => {
         ? await getRetailerInventory(userId)
         : await getMedicineByQuery(query, userId);
 
-    if (result.medicines) {
-      const detailedMedicines = await Promise.all(
-        result.medicines.map(async (med) => {
-          const details = await getMedicineDetails(med.medicine_id);
-          return details?.details
-            ? {
-                ...med,
-                ...details.details,
-                batch_id: med.batch_id,
-                batch_added_at: med.batch_added_at,
-                price: med.price,
-                quantity: med.quantity,
-              }
-            : med;
-        })
-      );
-
-      setMedicines(detailedMedicines);
-    }
+    setMedicines(result.medicines);
   };
 
   useEffect(() => {

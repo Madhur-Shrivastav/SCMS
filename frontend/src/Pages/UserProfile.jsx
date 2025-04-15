@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../contexts/UserContext";
-import { data, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AWS_LogOut from "../functions/auth/AWS_LogOut";
 import getConsumerOrders from "../functions/lambda/GetConsumerOrders";
 import getConsumerBills from "../functions/lambda/GetConsumerBills";

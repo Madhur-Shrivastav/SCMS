@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import getBillDetails from "../functions/lambda/GetBillDetails";
-import formatDate from "../functions/utility/FormatDate";
 
 const BillDetails = () => {
   const { userId, billId, orderId } = useParams();

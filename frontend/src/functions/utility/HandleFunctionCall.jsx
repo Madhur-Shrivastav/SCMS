@@ -6,6 +6,7 @@ import getOrderDetails from "../lambda/GetOrderDetails";
 import getRetailersByQuery from "../lambda/GetRetailersByQuery";
 import getRetailerTransactions from "../lambda/GetRetailerTransactions";
 import getRetailerOrders from "../lambda/GetRetailerOrders";
+import getRetailerInventory from "../lambda/GetRetailerInventory";
 
 export default async function handleFunctionCall(functionCall, user) {
   let result, dataKey, label;
@@ -50,10 +51,32 @@ export default async function handleFunctionCall(functionCall, user) {
       dataKey = "bill";
       label = "bill";
       break;
+    case "get_transaction_details":
+      result = await getBillDetails(
+        functionCall?.args?.billId,
+        functionCall?.args?.orderId
+      );
+      dataKey = "bill";
+      label = "transaction";
+      break;
     case "get_order_details":
       result = await getOrderDetails(functionCall?.args?.orderId);
       dataKey = "order";
       label = "order";
+      break;
+    case "get_retailer_inventory":
+      let availableMedicines = await getRetailerInventory(user.id);
+      result = {
+        medicines: availableMedicines.medicines.map((med) => ({
+          product_name: med.product_name,
+          batch_added_at: med.batch_added_at,
+          batch_id: med.batch_id,
+          quantity: med.quantity,
+          product_price: med.product_price,
+        })),
+      };
+      dataKey = "medicines";
+      label = "medicine";
       break;
     default:
       return "No data available.";
