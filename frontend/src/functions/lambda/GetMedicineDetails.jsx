@@ -27,7 +27,7 @@ export default async function getMedicineDetails(medicineId) {
       product_price: details.medicine.product_price?.S,
       salt_composition: details.medicine.salt_composition?.S,
       side_effects: details.medicine.side_effects?.S,
-      batch_added_at: formatDate(details.medicine.batch_added_at?.S),
+      batch_added_at: details.medicine.batch_added_at?.S,
       image_urls: details.medicine.image_urls?.L.map((item) => item.S),
     };
     console.log(formattedDetails);
