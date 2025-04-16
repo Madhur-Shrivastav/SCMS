@@ -3,6 +3,7 @@ import { UserContext } from "../contexts/UserContext";
 import { Link } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import getRetailersByQuery from "../functions/lambda/GetRetailersByQuery";
+import userimg from "/assets/user.jpeg";
 
 const Procure = () => {
   const { user } = useContext(UserContext);
@@ -36,8 +37,12 @@ const Procure = () => {
                 className="flex flex-col justify-center items-center text-center p-6 sm:p-8"
               >
                 <img
-                  src={retailer.profileImage}
-                  alt="listing cover"
+                  src={retailer.profileImage || userimg}
+                  alt={retailer.name || "Retailer profile"}
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.src = userimg;
+                  }}
                   className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover hover:scale-[1.05] transition-transform duration-300"
                 />
                 <div className="mt-4 flex flex-col gap-2 w-full">

@@ -11,6 +11,7 @@ import { FaClipboardList } from "react-icons/fa";
 import { ChartNoAxesCombinedIcon } from "lucide-react";
 import getRetailerTransactions from "../functions/lambda/GetRetailerTransactions";
 import { useAlert } from "../contexts/AlertContext";
+import userimg from "/assets/user.jpeg";
 
 const UserProfile = () => {
   const { user, setUser } = useContext(UserContext);
@@ -95,8 +96,12 @@ const UserProfile = () => {
       <div className="shadow-lg w-full lg:w-1/2 rounded-2xl h-full">
         <div className="flex flex-col p-4 sm:p-6 gap-4">
           <img
-            src={user.profileImage}
-            alt="Profile"
+            src={user.profileImage || userimg}
+            alt={user.name || "Profile"}
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.src = userimg;
+            }}
             className="rounded-2xl max-h-[50vh] sm:max-h-[35rem] mb-4 w-full object-cover"
           />
           <p className="text-sm text-gray-500 break-words">
@@ -131,16 +136,16 @@ const UserProfile = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full">
-            <button
-              type="submit"
-              className="bg-[#9bd300] hover:bg-[#9bd300c4] p-2 rounded-full text-black font-bold text-sm w-full transition-transform hover:scale-105"
+            <Link
+              to={`/${user.id}/update`}
+              className="bg-[#9bd300] hover:bg-[#9bd300c4] p-2 rounded-full text-black font-bold text-sm w-full transition-transform hover:scale-105 text-center"
             >
               EDIT PROFILE
-            </button>
+            </Link>
             <button
               type="button"
               onClick={handleLogout}
-              className="bg-[#9bd300] hover:bg-[#9bd300c4] p-2 rounded-full text-black font-bold text-sm w-full transition-transform hover:scale-105"
+              className="bg-[#9bd300] hover:bg-[#9bd300c4] p-2 rounded-full text-black font-bold text-sm w-full transition-transform hover:scale-105 hover:cursor-pointer"
             >
               LOG OUT
             </button>

@@ -8,6 +8,8 @@ import getMedicineByQuery from "../functions/lambda/GetMedicineByQuery";
 import getMedicineDetails from "../functions/lambda/GetMedicineDetails";
 import getRetailerDetails from "../functions/lambda/GetRetailerDetails";
 import getRetailerInventory from "../functions/lambda/GetRetailerInventory";
+import userimg from "/assets/user.jpeg";
+import medicineimg from "/assets/medicine.png";
 
 const Retailer = () => {
   const { retailerId } = useParams();
@@ -57,9 +59,12 @@ const Retailer = () => {
       <div className="flex flex-col sm:flex-row justify-center items-center gap-8 px-4 py-6 sm:px-10 sm:py-10">
         <div className="w-full sm:w-1/2">
           <img
-            src={retailer.profileImage}
-            alt="Madhur Shrivastav"
+            src={retailer?.profileImage || userimg}
+            alt={retailer?.name || "User"}
             className="rounded-3xl w-full h-64 sm:h-[50vh] object-cover"
+            onError={(e) => {
+              e.currentTarget.src = userimg;
+            }}
           />
         </div>
 
@@ -103,8 +108,14 @@ const Retailer = () => {
                 className="flex flex-col justify-center items-center text-center p-6 sm:p-8"
               >
                 <img
-                  src={medicine.image_urls ? medicine.image_urls[0] : ""}
+                  src={
+                    medicine.image_urls ? medicine.image_urls[0] : medicineimg
+                  }
                   alt="listing cover"
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.src = medicineimg;
+                  }}
                   className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover hover:scale-[1.05] transition-transform duration-300"
                 />
                 <div className="mt-4 flex flex-col gap-2 w-full">

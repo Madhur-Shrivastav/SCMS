@@ -27,7 +27,7 @@ const Inventory = () => {
       <SearchBar onSearch={fetchMedicines} />
 
       <div className="bg-white shadow-lg rounded-2xl p-6 w-[90%] mt-4">
-        {medicines.length > 0 ? (
+        {medicines?.length > 0 ? (
           <div className="overflow-x-auto rounded-[0.5rem]">
             <table className="w-full border-collapse">
               <thead>

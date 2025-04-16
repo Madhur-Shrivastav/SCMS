@@ -49,7 +49,7 @@ const Chat = () => {
   };
 
   return (
-    <section className="flex flex-col items-center justify-center w-full min-h-screen bg-gray-100 text-gray-800 px-4 sm:px-6 md:px-10 py-10">
+    <section className="flex flex-col items-center justify-center w-full min-h-[80vh] bg-gray-100 text-gray-800 px-4 sm:px-6 md:px-10 py-4">
       <div className="flex flex-col w-full max-w-xl bg-white shadow-xl rounded-lg overflow-hidden">
         <h1 className="text-center text-2xl font-bold pt-4">Pharmly</h1>
 

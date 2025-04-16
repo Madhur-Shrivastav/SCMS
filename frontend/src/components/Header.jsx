@@ -8,21 +8,37 @@ import { GiMedicines } from "react-icons/gi";
 import { FaUser } from "react-icons/fa";
 import { FaUserPlus } from "react-icons/fa6";
 import logo from "/assets/logo.png";
-
+import userimg from "/assets/user.jpeg";
 import { useState, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 
 const Header = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const { user, logout } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   function handleClick() {
     setIsVisible(!isVisible);
   }
   return (
-    <header className="bg-white border-b sticky top-0 z-50">
+    <header className="bg-white  shadow-lg sticky top-0 z-50">
       <nav className="flex items-center justify-between px-6 md:px-12 h-[5rem]">
-        <Link to={user ? `/${user.id}` : "/"}>
+        {user && (
+          <Link
+            to={`/${user?.id}/user`}
+            className="flex gap-2 items-center sm:hidden"
+          >
+            <img
+              src={user.profileImage ? user.profileImage : userimg}
+              alt="/assets/user.jpeg"
+              className="w-8 h-8 rounded-full object-cover"
+            />
+            <p className="text-[12px] font-medium text-black">
+              {user.firstName} {user.lastName}
+            </p>
+          </Link>
+        )}
+
+        <Link to={user ? `/${user.id}` : "/"} className="hidden sm:block">
           <img
             src={logo}
             className="w-[70px] h-[50px] sm:w-[90px] sm:h-[75px]"
@@ -82,10 +98,20 @@ const Header = () => {
             </>
           ) : (
             <Link
-              to={`/${user.id}/user`}
+              to={`/${user?.id}/user`}
               className="flex items-center gap-2 p-2 hover:text-[#9bd300] hover:scale-105 transition"
             >
-              Profile <FaUser />
+              <div className="flex justify-center items-center gap-1">
+                <img
+                  src={user.profileImage}
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+
+                <p className="text-[10px] sm:text-[12px] md:text-[16px] font-medium text-black">
+                  {user.firstName} {user.lastName}
+                </p>
+              </div>
             </Link>
           )}
         </div>

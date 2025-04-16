@@ -25,6 +25,7 @@ import BillDetails from "./Pages/BillDetails";
 import MedicineDetails from "./Pages/MedicineDetails";
 import Retailer from "./Pages/Retailer";
 import AddMedicine from "./Pages/AddMedicine";
+import UpdateProfile from "./components/UpdateProfile";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -54,6 +55,7 @@ function App() {
 
             <Route path="/:userId/*" element={<PrivateRoute />}>
               <Route index element={<Home />} />
+              <Route path="update" element={<UpdateProfile />} />
               <Route path="inventory" element={<Inventory />} />
               <Route path="add" element={<AddMedicine />} />
               <Route path="chat" element={<Chat />} />

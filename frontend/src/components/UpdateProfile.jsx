@@ -1,27 +1,25 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import Dropdown from "./Dropdown";
 import CityDropdown from "./CityDropdown";
-import AWS_SignUp from "../functions/auth/AWS_SignUp";
 import { storage } from "../functions/firebase/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useAlert } from "../contexts/AlertContext";
 import { UserContext } from "../contexts/UserContext";
-
-const SignUp = () => {
+import AWS_UpdateUser from "../functions/auth/AWS_UpdateUser";
+import userimg from "/assets/user.jpeg";
+const UpdateProfile = () => {
   const { showAlert } = useAlert();
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    contact: "",
-    city: "",
-    state: "",
-    password: "",
-    address: "",
-    role: "",
-    profileImage: null,
+    first_name: user.firstName || "",
+    last_name: user.lastName || "",
+    email: user.email || "",
+    address: user.address || "",
+    contact: user.contact || "",
+    city: user.city || "",
+    state: user.state || "",
+    role: user.role || "",
+    profileImage: user.profileImage || "",
   });
 
   const roles = ["Consumer", "Retailer"];
@@ -56,7 +54,8 @@ const SignUp = () => {
     "West Bengal",
   ];
 
-  console.log(formData);
+  console.log("Formdata:", formData);
+  console.log("User:", user);
 
   const handleChange = (name, value) => {
     setFormData((prevData) => {
@@ -106,20 +105,28 @@ const SignUp = () => {
     );
   };
 
-  const navigate = useNavigate();
-  const handleSignUp = async (formData) => {
+  const handleUpdateProfile = async (formData) => {
+    if (
+      Object.keys(formData).every(
+        (key) => String(formData[key]).trim() === String(user[key]).trim()
+      )
+    ) {
+      showAlert("info", "No changes to update.");
+      return;
+    }
     console.log(formData);
-    AWS_SignUp(formData)
+    AWS_UpdateUser(formData)
       .then((message) => {
-        console.log(
-          message +
-            `An account confirmation code has been sent to your email for verification.`
-        );
-        showAlert(
-          "info",
-          "An account confirmation code has been sent to your email for verification."
-        );
-        navigate(`/confirm`);
+        console.log(message);
+        showAlert("success", "Profile has been updated successfully!.");
+        setUser({
+          ...user,
+          ...formData,
+          firstName: formData.first_name,
+          lastName: formData.last_name,
+        });
+
+        localStorage.setItem("user", JSON.stringify(user));
       })
       .catch((error) => {
         console.error(error);
@@ -129,7 +136,7 @@ const SignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleSignUp(formData);
+    handleUpdateProfile(formData);
   };
 
   const [position, setPosition] = useState([]);
@@ -179,14 +186,6 @@ const SignUp = () => {
           <h1 className="text-black text-[2rem] sm:text-[2.5rem] font-bold">
             Create Your Account
           </h1>
-          <div className=" mb-2">
-            <p>
-              Already have an account?{" "}
-              <Link to="/login" className="text-blue-600">
-                Log In
-              </Link>
-            </p>
-          </div>
         </div>
         <div className="flex flex-col sm:grid sm:grid-cols-2 gap-5">
           <label className="relative w-full my-3">
@@ -258,20 +257,6 @@ const SignUp = () => {
           </label>
         </div>
         <div className="flex flex-col w-full gap-2">
-          <label className="relative w-full my-3">
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={(e) => handleChange(e.target.name, e.target.value)}
-              className="block py-3 text-black w-full text-sm bg-transparent border-b-2 border-black appearance-none focus:outline-none focus:border-[#9bd300] peer p-1"
-              required
-            />
-            <span className="absolute text-black text-lg duration-300 left-2 top-2 peer-focus:text-sm peer-focus:-translate-y-5 peer-focus:px-1 peer-valid:text-sm peer-valid:-translate-y-5 peer-valid:px-1 peer-focus:text-[#9bd300] peer-valid:text-[#9bd300]">
-              Password
-            </span>
-          </label>
-
           {useCurrentLocation ? (
             <span className="text-sm font-medium text-black border-b-2 border-black py-3">
               {address || "Fetching location..."}
@@ -328,8 +313,12 @@ const SignUp = () => {
         </div>
         {formData.profileImage && (
           <img
-            src={formData.profileImage}
-            alt="Profile Preview"
+            src={formData.profileImage || userimg}
+            alt={formData.name || "Profile Preview"}
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.src = userimg;
+            }}
             className="w-32 h-32 object-cover rounded-full mx-auto"
           />
         )}
@@ -337,21 +326,11 @@ const SignUp = () => {
           type="submit"
           className="bg-[#9bd300] hover:bg-[#9bd300c4] p-2 rounded-full text-black mx-auto transition-scale hover:scale-[1.1] hover:cursor-pointer duration-[300ms] font-bold text-[14px] w-full"
         >
-          CREATE ACCOUNT
+          UPDATE PROFILE
         </button>
-
-        <div className=" mb-2">
-          <p>
-            Make sure to{" "}
-            <Link to="/confirm" className="text-blue-600">
-              Confirm Sign Up
-            </Link>{" "}
-            before logging in.{" "}
-          </p>
-        </div>
       </form>
     </div>
   );
 };
 
-export default SignUp;
+export default UpdateProfile;

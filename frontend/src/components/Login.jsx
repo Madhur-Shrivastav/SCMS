@@ -1,7 +1,6 @@
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AWS_LogIn from "../functions/auth/AWS_LogIn";
-import AWS_LogOut from "../functions/auth/AWS_LogOut";
 import { UserContext } from "../contexts/UserContext";
 import { useAlert } from "../contexts/AlertContext";
 
@@ -42,12 +41,6 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     handleLogin(formData);
-  };
-
-  const handleLogout = () => {
-    AWS_LogOut();
-    setUser(null);
-    localStorage.removeItem("user");
   };
 
   return (
@@ -107,16 +100,9 @@ const Login = () => {
         <div className="flex gap-[1rem]">
           <button
             type="submit"
-            className="bg-[#9bd300] hover:bg-[#9bd300c4] p-2 rounded-full text-black mx-auto transition-scale hover:scale-[1.1] duration-[300ms] font-bold text-[14px] w-full"
+            className="bg-[#9bd300] hover:bg-[#9bd300c4] p-2 rounded-full text-black mx-auto transition-scale hover:scale-[1.1] hover:cursor-pointer duration-[300ms] font-bold text-[14px] w-full"
           >
             LOG IN
-          </button>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="bg-[#9bd300] hover:bg-[#9bd300c4] p-2 rounded-full text-black mx-auto transition-scale hover:scale-[1.1] duration-[300ms] font-bold text-[14px] w-full"
-          >
-            LOG OUT
           </button>
         </div>
 
