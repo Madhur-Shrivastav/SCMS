@@ -1,11 +1,21 @@
 import { CognitoUserAttribute } from "amazon-cognito-identity-js";
 import getUserPool from "./AWS_GetUserPool";
+import updateRetailer from "../lambda/UpdateRetailer";
 
-export default function AWS_UpdateUser(formData) {
+export default function AWS_UpdateUser(formData, retailer_id) {
   const userPool = getUserPool();
 
-  const { first_name, last_name, address, contact, city, state, profileImage } =
-    formData;
+  const {
+    first_name,
+    last_name,
+    email,
+    address,
+    contact,
+    city,
+    state,
+    profileImage,
+    role,
+  } = formData;
 
   return new Promise((resolve, reject) => {
     const cognitoUser = userPool.getCurrentUser();
@@ -22,6 +32,10 @@ export default function AWS_UpdateUser(formData) {
       new CognitoUserAttribute({
         Name: "custom:last_name",
         Value: last_name,
+      }),
+      new CognitoUserAttribute({
+        Name: "email",
+        Value: email,
       }),
       new CognitoUserAttribute({
         Name: "custom:address",
@@ -55,6 +69,20 @@ export default function AWS_UpdateUser(formData) {
         if (err) {
           reject(`Failed to update attributes: ${err.message}`);
         } else {
+          console.log(result);
+          if (role === "Retailer") {
+            updateRetailer(
+              retailer_id,
+              email,
+              first_name + " " + last_name,
+              contact,
+              city,
+              state,
+              address,
+              role,
+              profileImage
+            );
+          }
           resolve(result);
         }
       });

@@ -54,9 +54,6 @@ const UpdateProfile = () => {
     "West Bengal",
   ];
 
-  console.log("Formdata:", formData);
-  console.log("User:", user);
-
   const handleChange = (name, value) => {
     setFormData((prevData) => {
       const updatedFormData = {
@@ -115,9 +112,8 @@ const UpdateProfile = () => {
       return;
     }
     console.log(formData);
-    AWS_UpdateUser(formData)
-      .then((message) => {
-        console.log(message);
+    AWS_UpdateUser(formData, user.id)
+      .then(() => {
         showAlert("success", "Profile has been updated successfully!.");
         setUser({
           ...user,
@@ -287,14 +283,6 @@ const UpdateProfile = () => {
               Use Current Location
             </label>
           </div>
-          <label className=" w-full my-3">
-            <Dropdown
-              options={roles}
-              label="Select role"
-              value={formData.role}
-              onChange={(role) => handleChange("role", role)}
-            ></Dropdown>
-          </label>
         </div>
         <div className="flex flex-col w-full gap-2 rounded-lg shadow-sm hover:bg-gray-100 focus:border-2 focus:border-[#9bd300] duration-300 focus:outline-none">
           <input
