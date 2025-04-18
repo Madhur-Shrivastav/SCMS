@@ -1,12 +1,23 @@
 import getAWSLambda from "./getAWSLambda";
 
-export default async function orderMedicine(
-  consumerId,
+export default async function ({
   retailerId,
-  medicineId,
+  consumerId,
   batchId,
-  quantity
-) {
+  product_name,
+  product_price,
+  product_manufactured,
+  consumer_name,
+  consumer_contact,
+  consumer_email,
+  consumer_address,
+  retailer_name,
+  retailer_contact,
+  retailer_email,
+  retailer_address,
+  quantity,
+  medicineId,
+}) {
   const lambda = getAWSLambda();
   const payload = JSON.stringify({
     body: {
@@ -14,6 +25,17 @@ export default async function orderMedicine(
       retailer_id: retailerId,
       medicine_id: medicineId,
       batch_id: batchId,
+      product_name,
+      product_price,
+      product_manufactured,
+      consumer_name,
+      consumer_contact,
+      consumer_email,
+      consumer_address,
+      retailer_name,
+      retailer_contact,
+      retailer_email,
+      retailer_address,
       quantity,
     },
   });

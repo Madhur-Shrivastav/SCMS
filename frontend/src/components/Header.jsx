@@ -28,8 +28,11 @@ const Header = () => {
             className="flex gap-2 items-center sm:hidden"
           >
             <img
-              src={user.profileImage ? user.profileImage : userimg}
-              alt="/assets/user.jpeg"
+              src={user.profileImage || userimg}
+              alt={user.name || "Profile"}
+              onError={(e) => {
+                e.currentTarget.src = userimg;
+              }}
               className="w-8 h-8 rounded-full object-cover"
             />
             <p className="text-[12px] font-medium text-black">

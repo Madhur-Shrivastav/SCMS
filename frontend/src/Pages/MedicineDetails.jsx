@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import getMedicineDetails from "../functions/lambda/GetMedicineDetails";
+import getRetailerDetails from "../functions/lambda/GetRetailerDetails";
+import { UserContext } from "../contexts/UserContext";
 import { Modal } from "../components/Modal";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -9,17 +11,22 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 const MedicineDetails = () => {
+  const { user } = useContext(UserContext);
   const { userId, retailerId, medicineId, batchId } = useParams();
   const [medicine, setMedicine] = useState(null);
+  const [retailer, setRetailer] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!medicineId) return;
+    if (!medicineId || !retailerId) return;
 
     const getDetails = async () => {
       try {
         const medicineInfo = await getMedicineDetails(medicineId);
         setMedicine(medicineInfo.details);
+
+        const retailerInfo = await getRetailerDetails(retailerId);
+        setRetailer(retailerInfo.retailer);
       } catch (error) {
         console.log("Error:", error);
       } finally {
@@ -28,7 +35,7 @@ const MedicineDetails = () => {
     };
 
     getDetails();
-  }, [medicineId]);
+  }, [medicineId, retailerId]);
 
   if (loading)
     return (
@@ -67,7 +74,6 @@ const MedicineDetails = () => {
           </Swiper>
         </div>
 
-        {/* Details */}
         <div className="flex flex-col w-full lg:w-1/2 gap-6">
           <div>
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
@@ -102,8 +108,19 @@ const MedicineDetails = () => {
               <Modal
                 retailerId={retailerId}
                 consumerId={userId}
-                medicineId={medicineId}
                 batchId={batchId}
+                product_name={medicine.product_name}
+                product_price={medicine.product_price}
+                product_manufactured={medicine.product_manufactured}
+                consumer_name={`${user.firstName} ${user.lastName}`}
+                consumer_contact={user.contact}
+                consumer_email={user.email}
+                consumer_address={user.address}
+                retailer_name={retailer.name}
+                retailer_contact={retailer.contact}
+                retailer_email={retailer.email}
+                retailer_address={retailer.address}
+                medicineId={medicine.medicine_id}
               />
             </div>
           )}

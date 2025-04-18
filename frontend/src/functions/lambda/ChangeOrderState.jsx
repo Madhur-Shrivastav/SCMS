@@ -6,9 +6,7 @@ export default async function changeOrderState(
   nextState,
   consumerPaid,
   quantity,
-  retailer_id,
-  medicine_id,
-  batch_id
+  medicine_id
 ) {
   const lambda = getAWSLambda();
   try {
@@ -18,9 +16,7 @@ export default async function changeOrderState(
       next_state: nextState,
       consumer_paid: consumerPaid,
       quantity: quantity,
-      retailer_id: retailer_id,
       medicine_id: medicine_id,
-      batch_id: batch_id,
     };
 
     const params = {

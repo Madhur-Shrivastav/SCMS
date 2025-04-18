@@ -3,7 +3,23 @@ import orderMedicine from "../functions/lambda/OrderMedicine";
 import { useState } from "react";
 import { useAlert } from "../contexts/AlertContext";
 
-export function Modal({ retailerId, consumerId, medicineId, batchId }) {
+export function Modal({
+  retailerId,
+  consumerId,
+  batchId,
+  product_name,
+  product_price,
+  product_manufactured,
+  consumer_name,
+  consumer_contact,
+  consumer_email,
+  consumer_address,
+  retailer_name,
+  retailer_contact,
+  retailer_email,
+  retailer_address,
+  medicineId,
+}) {
   const { showAlert } = useAlert();
   const [quantity, setQuantity] = useState(1);
   function openModal(id) {
@@ -17,13 +33,24 @@ export function Modal({ retailerId, consumerId, medicineId, batchId }) {
   }
 
   async function handleOrder() {
-    const response = await orderMedicine(
-      consumerId,
+    const response = await orderMedicine({
       retailerId,
-      medicineId,
+      consumerId,
       batchId,
-      quantity
-    );
+      product_name,
+      product_price,
+      product_manufactured,
+      consumer_name,
+      consumer_contact,
+      consumer_email,
+      consumer_address,
+      retailer_name,
+      retailer_contact,
+      retailer_email,
+      retailer_address,
+      quantity,
+      medicineId,
+    });
 
     console.log(response);
     if (!response.body.error) {

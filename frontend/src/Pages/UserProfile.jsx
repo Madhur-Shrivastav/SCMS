@@ -12,15 +12,13 @@ import { ChartNoAxesCombinedIcon } from "lucide-react";
 import getRetailerTransactions from "../functions/lambda/GetRetailerTransactions";
 import { useAlert } from "../contexts/AlertContext";
 import userimg from "/assets/user.jpeg";
+import AWS_RemoveUser from "../functions/auth/AWS_RemoveUser";
 
 const UserProfile = () => {
   const { user, setUser } = useContext(UserContext);
   console.log(user);
-  const handleLogout = () => {
-    AWS_LogOut();
-    setUser(null);
-    localStorage.removeItem("user");
-  };
+  const { showAlert } = useAlert();
+
   const [orders, setOrders] = useState([]);
   const [bills, setBills] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -60,9 +58,7 @@ const UserProfile = () => {
       next_status,
       consumer_paid,
       quantity,
-      retailer_id,
       medicine_id,
-      batch_id,
     } = order;
     changeOrderState(
       order_id,
@@ -70,9 +66,7 @@ const UserProfile = () => {
       next_status,
       consumer_paid,
       quantity,
-      retailer_id,
-      medicine_id,
-      batch_id
+      medicine_id
     )
       .then((response) => {
         setOrders((prevOrders) =>
@@ -89,7 +83,25 @@ const UserProfile = () => {
         alert(error.error);
       });
   };
-  const { showAlert } = useAlert();
+
+  const handleLogout = () => {
+    AWS_LogOut();
+    setUser(null);
+    localStorage.removeItem("user");
+  };
+
+  const handleRemoveProfile = async () => {
+    AWS_RemoveUser(user)
+      .then(() => {
+        showAlert("success", "Profile has been deleted successfully!.");
+        setUser(null);
+        localStorage.clear();
+      })
+      .catch((error) => {
+        console.error(error);
+        showAlert("error", error.message);
+      });
+  };
 
   return (
     <section className="bg-white min-h-screen p-4 sm:p-6 lg:p-[6rem] flex flex-col gap-8 items-center lg:flex-row lg:items-start">
@@ -148,6 +160,14 @@ const UserProfile = () => {
               className="bg-[#9bd300] hover:bg-[#9bd300c4] p-2 rounded-full text-black font-bold text-sm w-full transition-transform hover:scale-105 hover:cursor-pointer"
             >
               LOG OUT
+            </button>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full">
+            <button
+              className="text-red-700 cursor-pointer"
+              onClick={handleRemoveProfile}
+            >
+              Delete Profile
             </button>
           </div>
         </div>

@@ -32,62 +32,86 @@ const BillDetails = () => {
   console.log(bill);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-6">
       <div className="w-full max-w-3xl bg-white shadow-xl rounded-2xl p-6 md:p-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm md:text-base text-gray-700">
-          <div className="space-y-2">
-            <h1 className="font-bold text-2xl sm:text-3xl">Product Details</h1>
-            <p className="text-base sm:text-lg">
-              Product Name: {bill.product_name}
+          <div className="space-y-4">
+            <h1 className="font-bold text-2xl sm:text-3xl text-gray-800">
+              Product Details
+            </h1>
+            <p className="text-base sm:text-lg break-words">
+              <span className="font-semibold">Product Name:</span>{" "}
+              {bill.product_name}
             </p>
-            <p className="text-base sm:text-lg">
-              Manufacturer: {bill.product_manufactured}
+            <p className="text-base sm:text-lg break-words">
+              <span className="font-semibold">Manufacturer:</span>{" "}
+              {bill.product_manufactured}
             </p>
-            <p className="text-base sm:text-lg">Price: ₹{bill.product_price}</p>
-            <p className="text-base sm:text-lg">Quantity: {bill.quantity}</p>
-            <p className="text-base sm:text-lg">Date/Time: {bill.time_date}</p>
+            <p className="text-base sm:text-lg break-words">
+              <span className="font-semibold">Price:</span> ₹
+              {bill.product_price}
+            </p>
+            <p className="text-base sm:text-lg break-words">
+              <span className="font-semibold">Quantity:</span> {bill.quantity}
+            </p>
+            <p className="text-base sm:text-lg break-words">
+              <span className="font-semibold">Date/Time:</span> {bill.time_date}
+            </p>
           </div>
+
           {userId === bill.consumer_id ? (
-            <div className="space-y-2">
-              <h1 className="font-bold text-2xl sm:text-3xl">
+            <div className="space-y-4">
+              <h1 className="font-bold text-2xl sm:text-3xl text-gray-800">
                 Retailer Details
               </h1>
-              <p className="text-base sm:text-lg">Name: {bill.retailer_name}</p>
-              <p className="text-base sm:text-lg">
-                Contact: {bill.retailer_contact}
+              <p className="text-base sm:text-lg break-words">
+                <span className="font-semibold">Name:</span>{" "}
+                {bill.retailer_name}
               </p>
-              <p className="text-base sm:text-lg">
-                Email: {bill.retailer_email}
+              <p className="text-base sm:text-lg break-words">
+                <span className="font-semibold">Contact:</span>{" "}
+                {bill.retailer_contact}
               </p>
-              <p className="text-base sm:text-lg">
-                Address: {bill.retailer_address}
+              <p className="text-base sm:text-lg break-words">
+                <span className="font-semibold">Email:</span>{" "}
+                {bill.retailer_email}
+              </p>
+              <p className="text-base sm:text-lg break-words">
+                <span className="font-semibold">Address:</span>{" "}
+                {bill.retailer_address}
               </p>
             </div>
           ) : (
-            <div className="space-y-2">
-              <h1 className="font-bold text-2xl sm:text-3xl">
+            <div className="space-y-4">
+              <h1 className="font-bold text-2xl sm:text-3xl text-gray-800">
                 Consumer Details
               </h1>
-              <p className="text-base sm:text-lg">Name: {bill.consumer_name}</p>
-              <p className="text-base sm:text-lg">
-                Contact: {bill.consumer_contact}
+              <p className="text-base sm:text-lg break-words">
+                <span className="font-semibold">Name:</span>{" "}
+                {bill.consumer_name}
               </p>
-              <p className="text-base sm:text-lg">
-                Email: {bill.consumer_email}
+              <p className="text-base sm:text-lg break-words">
+                <span className="font-semibold">Contact:</span>{" "}
+                {bill.consumer_contact}
               </p>
-              <p className="text-base sm:text-lg">
-                Address: {bill.consumer_address}
+              <p className="text-base sm:text-lg break-words">
+                <span className="font-semibold">Email:</span>{" "}
+                {bill.consumer_email}
+              </p>
+              <p className="text-base sm:text-lg break-words">
+                <span className="font-semibold">Address:</span>{" "}
+                {bill.consumer_address}
               </p>
             </div>
           )}
         </div>
 
-        <div className="flex justify-between items-center mt-8">
-          <p className="text-xl font-semibold text-gray-800">
-            Bill ID: {bill.bill_id}
+        <div className="flex flex-wrap justify-between items-center mt-8 md:mt-10 border-t border-gray-300 pt-4">
+          <p className="text-xl font-semibold text-gray-800 w-full sm:w-auto break-words">
+            <span className="font-semibold">Bill ID:</span> {bill.bill_id}
           </p>
-          <p className="text-xl font-semibold text-gray-800">
-            Amount Payed: ₹{bill.amount}
+          <p className="text-xl font-semibold text-gray-800 w-full sm:w-auto break-words">
+            <span className="font-semibold">Amount Paid:</span> ₹{bill.amount}
           </p>
         </div>
       </div>
