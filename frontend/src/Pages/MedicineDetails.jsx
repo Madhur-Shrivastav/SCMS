@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import getMedicineDetails from "../functions/lambda/GetMedicineDetails";
 import getRetailerDetails from "../functions/lambda/GetRetailerDetails";
 import { UserContext } from "../contexts/UserContext";
@@ -9,13 +9,18 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import removeMedicine from "../functions/lambda/RemoveMedicine";
+import { MdDelete } from "react-icons/md";
+import { useAlert } from "../contexts/AlertContext";
 
 const MedicineDetails = () => {
+  const { showAlert } = useAlert();
   const { user } = useContext(UserContext);
   const { userId, retailerId, medicineId, batchId } = useParams();
   const [medicine, setMedicine] = useState(null);
   const [retailer, setRetailer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   console.log("Retailer:", retailerId);
 
@@ -40,6 +45,21 @@ const MedicineDetails = () => {
 
     getDetails();
   }, [medicineId]);
+
+  const handleRemove = async () => {
+    removeMedicine(medicine.medicine_id)
+      .then(() => {
+        showAlert(
+          "success",
+          "Medicine has been removed from your inventory successfully!."
+        );
+        navigate(-1);
+      })
+      .catch((error) => {
+        console.error(error);
+        showAlert("error", error.message);
+      });
+  };
 
   if (loading)
     return (
@@ -107,25 +127,35 @@ const MedicineDetails = () => {
             </p>
           </div>
 
-          {retailerId && (
-            <div className="pt-4">
-              <Modal
-                retailerId={retailerId}
-                consumerId={userId}
-                batchId={batchId}
-                product_name={medicine.product_name}
-                product_price={medicine.product_price}
-                product_manufactured={medicine.product_manufactured}
-                consumer_name={`${user.firstName} ${user.lastName}`}
-                consumer_contact={user.contact}
-                consumer_email={user.email}
-                consumer_address={user.address}
-                retailer_name={retailer.name}
-                retailer_contact={retailer.contact}
-                retailer_email={retailer.email}
-                retailer_address={retailer.address}
-                medicineId={medicine.medicine_id}
-              />
+          {user.role === "Consumer" ? (
+            retailerId && (
+              <div className="pt-4">
+                <Modal
+                  retailerId={retailerId}
+                  consumerId={userId}
+                  batchId={batchId}
+                  product_name={medicine.product_name}
+                  product_price={medicine.product_price}
+                  product_manufactured={medicine.product_manufactured}
+                  consumer_name={`${user.firstName} ${user.lastName}`}
+                  consumer_contact={user.contact}
+                  consumer_email={user.email}
+                  consumer_address={user.address}
+                  retailer_name={retailer.name}
+                  retailer_contact={retailer.contact}
+                  retailer_email={retailer.email}
+                  retailer_address={retailer.address}
+                  medicineId={medicine.medicine_id}
+                />
+              </div>
+            )
+          ) : (
+            <div
+              className="bg-red-500 text-white px-4 py-2 rounded-full hover:scale-[1.05] hover:cursor-pointer duration-300 hover:bg-red-400 text-sm w-full sm:w-auto flex items-center justify-center gap-1.5"
+              onClick={handleRemove}
+            >
+              <button className="hover:cursor-pointer">Delete Medicine</button>
+              <MdDelete />
             </div>
           )}
         </div>

@@ -64,7 +64,7 @@ export function Modal({
   return (
     <>
       <div
-        className="bg-red-500 text-white px-4 py-2 rounded-full hover:scale-[1.05] hover:cursor-pointer duration-300 hover:bg-red-400 text-sm w-full sm:w-auto flex items-center gap-1.5"
+        className="bg-blue-500 text-white px-4 py-2 rounded-full hover:scale-[1.05] hover:cursor-pointer duration-300 hover:bg-blue-400 text-sm w-full sm:w-auto flex items-center justify-center gap-1.5"
         onClick={() => openModal(medicineId)}
       >
         <button className="hover:cursor-pointer">Order Medicine</button>

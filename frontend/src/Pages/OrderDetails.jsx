@@ -71,7 +71,6 @@ const OrderDetails = () => {
             </h2>
             <div className="grid sm:grid-cols-2 gap-4">
               <Detail label="Order ID" value={order.order_id} />
-              <Detail label="Batch ID" value={order.batch_id} />
               <Detail label="Medicine ID" value={order.medicine_id} />
               <Detail label="Quantity" value={order.quantity} />
               <Detail label="Product Name" value={order.product_name} />

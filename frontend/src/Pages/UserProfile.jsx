@@ -196,7 +196,17 @@ const UserProfile = () => {
 
                   {user?.role === "Retailer" ? (
                     <button
-                      className="bg-[#9bd300] text-white px-4 py-2 rounded-full hover:scale-[1.05] hover:cursor-pointer duration-300 hover:bg-[#9bd300c4] text-sm w-full sm:w-auto"
+                      className={` ${
+                        order.order_status === "Delivered" &&
+                        !order.consumer_paid
+                          ? "bg-orange-400"
+                          : "bg-[#9bd300]"
+                      } text-white px-4 py-2 rounded-full hover:scale-[1.05] hover:cursor-pointer duration-300 ${
+                        order.order_status === "Delivered" &&
+                        !order.consumer_paid
+                          ? "hover:bg-orange-500"
+                          : "hover:bg-[#9bd300c4]"
+                      }  text-sm w-full sm:w-auto`}
                       onClick={() => handleOrderStateChange(order)}
                       disabled={
                         order.order_status === "Delivered" &&
