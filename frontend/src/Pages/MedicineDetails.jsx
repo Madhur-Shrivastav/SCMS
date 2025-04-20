@@ -17,15 +17,19 @@ const MedicineDetails = () => {
   const [retailer, setRetailer] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  console.log("Retailer:", retailerId);
+
   useEffect(() => {
-    if (!medicineId || !retailerId) return;
+    if (!medicineId) return;
 
     const getDetails = async () => {
       try {
         const medicineInfo = await getMedicineDetails(medicineId);
         setMedicine(medicineInfo.details);
 
-        const retailerInfo = await getRetailerDetails(retailerId);
+        const retailerInfo = await getRetailerDetails(
+          user.role === "Consumer" ? retailerId : user.id
+        );
         setRetailer(retailerInfo.retailer);
       } catch (error) {
         console.log("Error:", error);
@@ -35,7 +39,7 @@ const MedicineDetails = () => {
     };
 
     getDetails();
-  }, [medicineId, retailerId]);
+  }, [medicineId]);
 
   if (loading)
     return (
@@ -59,7 +63,7 @@ const MedicineDetails = () => {
             navigation
             pagination={{ clickable: true }}
             autoplay={{ delay: 3000, disableOnInteraction: false }}
-            loop
+            loop={medicine.image_urls.length > 1}
             className="rounded-2xl shadow-lg"
           >
             {medicine.image_urls.map((url, index) => (
