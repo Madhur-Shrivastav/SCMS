@@ -122,8 +122,15 @@ const SignUp = () => {
         navigate(`/confirm`);
       })
       .catch((error) => {
-        console.error(error);
-        showAlert("error", error.message);
+        console.log(typeof error);
+        if (error.includes("password")) {
+          showAlert(
+            "error",
+            "Password must contain at least one non-whitespace character at the beginning and end. No leading or trailing spaces!"
+          );
+        } else {
+          showAlert("error", error);
+        }
       });
   };
 
