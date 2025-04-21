@@ -72,7 +72,7 @@ export default function CityDropdown({ selectedState, value, onChange }) {
           {cityOptions.map((city, index) => (
             <li
               key={index}
-              onClick={() => {
+              onMouseDown={() => {
                 onChange(city);
                 setIsOpen(false);
               }}

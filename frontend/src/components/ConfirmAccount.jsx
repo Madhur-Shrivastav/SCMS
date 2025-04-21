@@ -88,7 +88,7 @@ const ConfirmAccount = () => {
               required
             />
             <span className="absolute text-black text-lg duration-300 left-2 top-2 peer-focus:text-sm peer-focus:-translate-y-5 peer-focus:px-1 peer-valid:text-sm peer-valid:-translate-y-5 peer-valid:px-1 peer-focus:text-[#9bd300] peer-valid:text-[#9bd300]">
-              Conformation Code
+              Confirmation Code
             </span>
           </label>
         </div>
