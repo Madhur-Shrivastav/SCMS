@@ -8,7 +8,7 @@ export default function Dropdown({ options, label, value, onChange }) {
     <div className="relative">
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((prev) => !prev)}
         className="w-full flex justify-between items-center p-3 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-100 focus:border-2 focus:border-yellow-300 duration-300 focus:outline-none"
       >
         {value || label}
@@ -20,7 +20,7 @@ export default function Dropdown({ options, label, value, onChange }) {
           {options.map((option, index) => (
             <li
               key={index}
-              onClick={() => {
+              onMouseDown={() => {
                 onChange(option);
                 setIsOpen(false);
               }}
